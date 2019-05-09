@@ -1,131 +1,249 @@
 <template>
-<v-card>
-    <v-error :net="neterror"></v-error>
+<v-card class="font">
     <div style="margin-bottom: 10px">
         <v-toolbar card color="blue darken-1" dark>
             <v-btn icon @click="back"><v-icon>arrow_back</v-icon></v-btn>
-            <v-toolbar-title>写文章</v-toolbar-title>
+            <v-toolbar-title>文章管理</v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon @click="show = !show">
-                <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
-            </v-btn>
         </v-toolbar>
     </div>
-    <v-form v-model="form" ref="form" v-show="show">
-        <v-container fluid><!--在layout外面加上container会显示又间距，更加人性化-->
-        <v-layout wrap  row>
-            <v-flex xs4 sm4 md4>
-                <v-card flat> 
-                <v-select :items="articletitles" label="选择分类" v-model="new_item" :rules="[rules.required]" box>
-                </v-select>
-                </v-card>
-            </v-flex>
-            <v-flex xs4 sm4 md4>
-                <v-card flat>
-                <v-text-field v-model="new_title" label="文章标题" clearable :rules="[rules.required]" box>
-                </v-text-field>
-                </v-card>
-            </v-flex>
-            <v-flex xs4 sm4 md4>
-                <v-card flat>
-                    <v-text-field v-model="new_author" label="文章作者" clearable :rules="[rules.required]" box>
-                    </v-text-field>
-                </v-card>
-            </v-flex>
-            <v-flex xs12 sm12 md12>
-                <div style="border:solid 1px grey">
-                <v-card flat>
-                    <v-textarea v-model="new_content" label="文章内容(html文本格式)" single-line full-width :rules="[rules.required]">
-                    </v-textarea>
-                </v-card>
-                </div>
-            </v-flex>
-            <v-flex xs6 sm6 md6>
-                <v-card flat>
-                    <v-text-field v-model="new_abstract" label="文章摘要" :rules="[rules.required]" box>
-                    </v-text-field>
-                </v-card>
-            </v-flex>
-            <v-flex xs6 sm6 md6>
-                <v-card flat>
-                    <v-text-field v-model="new_remark" label="文章备注(选填)" box>
-                    </v-text-field>
-                </v-card>
-            </v-flex>
-            <v-btn color="blue darken-1" class="white--text" @click="$refs.form.reset()">
-                清空
-            </v-btn>
-            <v-btn color="blue darken-1" class="white--text" :disabled="!form" @click="addArticle" :loading="addloading"><!--如何实现disabled和form的绑定-->
-                提交
-            </v-btn>
-        </v-layout>
-        </v-container>
-    </v-form>
+<v-layout row wrap>
+    <v-flex xs4 sm4 md4>
+        <v-btn right color="blue darken -1" dark @click="newFile" round small>新建</v-btn>
+    </v-flex>
+    <v-flex xs4 sm4 md4>
+        <v-btn right color="primary" round small>导入</v-btn>
+    </v-flex>
+    <v-flex xs12 sm12 md12>
+        <v-card style="padding:10px;">
+            <v-layout row wrap style="color:red;">
+                <v-flex xs4 sm4 md4>
+                    <div class="line">
+                        <strong>标题</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs2 sm2 md2>
+                    <div class="line">
+                    <strong>作者</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs3 sm3 md3>
+                    <div class="line">
+                    <strong>更新时间</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs3 sm3 md3>
+                    <div class="line">
+                         <strong>操作</strong>
+                    </div>
+                </v-flex>
+            </v-layout>
+            <v-layout row wrap v-for="(item,index) in articles" :key="index">
+                <v-flex xs4 sm4 md4>
+                    <div class="line">
+                        <strong>{{item.title}}</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs2 sm2 md2>
+                    <div class="line">
+                    <strong>{{item.author}}</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs3 sm3 md3>
+                    <div class="line">
+                    <span>{{item.updatetime}}</span>
+                    </div>
+                </v-flex>
+                <v-flex xs3 sm3 md3>
+                    <div class="line">
+                         <el-button type="primary" icon="el-icon-edit" size="mini" @click="edit(item.id)"></el-button>
+                         <el-button type="info" icon="el-icon-download" size="mini" @click="downloadsure(item.id)"></el-button>
+                         <el-button type="danger" icon="el-icon-delete" size="mini" @click="deleteSure(item.id)"></el-button>
+                    </div>
+                </v-flex>
+            </v-layout>
+        </v-card>        
+    </v-flex>
+</v-layout>
+<v-dialog width="400" v-model="downloaddialog" persistent>
+    <v-card>
+        <v-card-title>
+            <strong>文档导出为</strong>
+        </v-card-title>
+        <v-container>
+            <v-layout justify-center row wrap align-center>
 
-    <v-article1></v-article1>
-    <v-article2></v-article2>
+                <v-flex xs3 sm3 md3>
+                    <v-card @click="download('pdf')">
+                        <v-img :src='require("../images/pdf.svg")'></v-img>
+                    </v-card>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                </v-flex>
+                <v-flex xs3 sm3 md3>
+                    <v-card @click="download('md')">
+                        <v-img :src='require("../images/md.svg")'></v-img>
+                    </v-card>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                </v-flex>
+                <v-flex xs3 sm3 md3>
+                    <v-card @click="download('word')">
+                        <v-img :src='require("../images/word.svg")'></v-img>
+                    </v-card>
+                </v-flex>
+
+                <v-flex xs3 sm3 md3>
+                    <div style="text-align:center">PDF</div>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                </v-flex>
+                <v-flex xs3 sm3 md3>
+                    <div style="text-align:center">MarkDown</div>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                </v-flex>
+                <v-flex xs3 sm3 md3>
+                    <div style="text-align:center">Word</div>
+                </v-flex>
+            </v-layout>
+        </v-container>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn small color="green darken -1" flat @click="downloaddialog=false">取消</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>
+<v-dialog width="300" v-model="downloadurl" persistent>
+    <v-card>
+        <v-card-title>
+            <strong>
+                <a href="" id="ddd" download="">点击下载</a>
+            </strong>
+        </v-card-title>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn small color="blue darken -1" flat @click="downloadurl=false">取消</v-btn>
+        </v-card-actions>
+    </v-card>
+</v-dialog>
 </v-card>
 </template>
 <style scoped>
+.line{
+    margin-bottom: 20px;
 
+}
+.font{
+    font-size: 1vw;
+}
+.font2{
+    font-size: 1.5vw;
+}
 </style>
 <script>
-import vError from '../global/neterror.vue'
-import vArticle1 from './article1.vue'
-import vArticle2 from './article2.vue'
+
 export default {
-    methods: {
-        back: function(){
-            this.$router.go(-1);
-        },
-        addArticle: function(){
-            const _this = this;
-            _this.addloading = true;
-            _this.$axios({
-                method: "POST",
-                url: '/article',
-                data: {
-                    group: _this.new_item,
-                    title: _this.new_title,
-                    abstract: _this.new_abstract,
-                    author: _this.new_author,
-                    content: _this.new_content,
-                    remark: _this.new_remark
-                }
-            })
-            .then(res => {
-                _this.addloading = false;
-                _this.$message.sucess("添加成功");
-            })
-            .catch(err => {
-                _this.neterror = true;
-                _this.addloading = false;
-                setTimeout(() => {
-                    _this.neterror = false
-                }, 4000);
-            })
-        }
-    },
     data: ()=>({
-        articletitles: ["学习心得","旅行日记","生活点滴","我的大学","年少有你"], 
-        new_item: undefined,
-        new_title: undefined,
-        new_author: undefined,
-        new_content: undefined,
-        new_abstract: undefined,
-        new_remark: undefined,
-        form: false,
-        rules: {
-            required: v => !!v || '必填项目'
-        },
-        neterror: false,
-        addloading: false,
-        show: true,
+        value:'',
+        articles: [],
+        groups: [],
+        downloaddialog: false,
+        downloadid: undefined,
+        downloadurl: false
     }),
     components: {
-        vError,
-        vArticle1,
-        vArticle2
+     
+    },
+    methods: {
+        back: function(){
+            this.$router.push('/home/administrator/navigation');
+        },
+       newFile: async function(){
+           let paths = [
+                {
+                    text: '导航',
+                    disabled: false,
+                    href: '/home/administrator/navigation',
+                },{
+                    text: '新建文章',
+                    disabled: false,
+                    href: '/home/administrator/article',
+                },{
+                    text: '无标题',
+                    disabled: true,
+                    
+                }
+           ];
+           this.$store.commit('set_groups',this.groups);
+           this.$store.commit('set_course',{});
+           this.$store.commit('set_paths',paths);
+           this.$store.commit('set_url','/article');
+           this.$router.push('/home/administrator/editmd');
+       },
+       edit: async function(articleid){
+           this.$axios({
+               method: 'get',
+               url :'/article',
+               params: {
+                   articleid: articleid
+               }
+           })
+           .then(res => {
+               let path = [{
+                   text: '导航',
+                   disabled: false,
+                   href: '/home/administrator'
+               },{
+                   text: '编辑文章',
+                   disabled: false,
+                   href: '/home/administrator/article'
+               },{
+                   text: res.data.article.title,
+                   disabled: true,
+               }];
+               this.$store.commit('set_paths',path);
+               this.$store.commit('set_groups',this.groups);
+               this.$store.commit('set_course',res.data.article);
+               this.$store.commit('set_url','/article');
+               this.$router.push('/home/administrator/editmd');
+           })
+       },
+       download: function(type){
+           this.$axios({
+               url: '/article',
+               method: 'get',
+               params: {
+                   idforfile: this.downloadid,
+                   filetype: type
+               }
+           })
+           .then(res => {
+               let href = res.data.url;
+               document.querySelector('#ddd').href = href;
+               this.downloaddialog = false;
+               this.downloadurl = true;
+           })
+           .catch(() => {
+               this.$message.error('导出失败，请稍后重试');
+           })
+       },
+       downloadsure: function(id){
+           this.downloaddialog = true;
+           this.downloadid = id;
+       }
+    },
+    created: async function(){
+        this.$axios.get('/article?title=true')
+        .then(res => {
+            this.articles = res.data.articles;
+        })
+        .catch(() => {
+            this.$message.error('信息获取错误');
+            return;
+        })
+        let response = await this.$axios.get('/articlegroups');
+        this.groups = await response.data.groups;
     }
 }
 </script>

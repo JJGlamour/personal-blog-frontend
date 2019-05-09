@@ -1,7 +1,11 @@
 <template>
     <div class="board">
         <v-flex xs12 sm12 md12>
-            <br>
+            <v-progress-linear
+                background-color="pink lighten-3"
+                color="blue darken-1"
+                :indeterminate="true"
+            ></v-progress-linear>
             <v-card>
                 <h2>留言部分</h2>
             </v-card>
@@ -48,12 +52,6 @@ export default {
     data:()=>({
         loading: false,
         messages: [
-        //     {
-        //     content: "我们的挣扎与彷徨，其实触及的正是身为人的终极使命：我们到底应该怎样活着。",
-        //     author: 'Jack',
-        //     email: '88106827@qq.com',
-        //     admire: 4//增加时候会有一个warn
-        // }
         ],
         startid: 1,//开始获取留言数据id
         count: 4, //每次加载获取的留言条数
@@ -68,7 +66,7 @@ export default {
         //不能监听this.$store.state.msg: 
         newmsg: function(val){
             this.messages.splice(0,0,val);
-            console.log("监听到了新增留言");//下一步就是把数据发送到服务端存储好了
+            //console.log("监听到了新增留言");//下一步就是把数据发送到服务端存储好了
         }
     },
     methods: {
@@ -84,7 +82,7 @@ export default {
                 }
             })
             .then(function(response){
-                const msgs = response.data.msgs;
+                let msgs = response.data.msgs;
                 if(!msgs.length){
                     _this.$message({
                         showClose: true,
@@ -101,6 +99,9 @@ export default {
             })
             .catch(function(error){
                 //console.log(error.response.status);
+                // console.log('???');
+                // console.log(error);
+                // console.log('????');
                 _this.loading = false;
                 _this.$message.error("留言获取错误，请稍后重试");
             })
@@ -116,17 +117,26 @@ export default {
                     admiremsgid: this.messages[index].id
                 }//put方法不能params??
             })
-            .then(res => {
-                console.log("点赞成功");
-            })
             .catch(err => {
                 _this.$message.error("点赞失败，请稍后重试");
                 _this.messages[index].admire --;
             })
         }
     },
-    mounted: function(){
+    mounted: async function(){
         this.getmsg(1,this.count);
+   
+        // try{ 
+        //     let response = await fetch('http://47.101.50.208/api/msg?startid=1&count=4'); 
+        //     let data = await response.json();
+        //     //或者使用axios
+        //     // let response = await this.$axios.get('http://47.101.50.208/api/msg?startid=1&count=4');
+        //     // let data = response.data;
+        //     console.log(data); 
+        // } catch(e){ 
+        //     console.log("error") 
+        // }
+
     }
 }
 </script>

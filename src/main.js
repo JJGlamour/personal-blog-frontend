@@ -9,6 +9,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 import router from './router'
 import store from './store'
 import axios from './http'
+import mavonEditor from 'mavon-editor'
+import 'mavon-Editor/dist/css/index.css'
 Vue.prototype.$axios = axios//注册全局
 
 Vue.use(Vuetify,{
@@ -24,6 +26,7 @@ Vue.use(Vuetify,{
   }
 });
 Vue.use(ElementUI);
+Vue.use(mavonEditor);
 
 Vue.config.productionTip = false
 new Vue({

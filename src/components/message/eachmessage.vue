@@ -1,6 +1,6 @@
 <template>
   <v-layout row wrap>
-    <v-flex xs12 sm12 md12>
+    <v-flex xs11 sm11 md11>
       <v-card flat>
         <v-card-text>
           <div class="author"><v-icon>face</v-icon><strong>{{ author }}：</strong><br></div><br>

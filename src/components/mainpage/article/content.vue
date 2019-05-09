@@ -1,103 +1,38 @@
 <template>
-<div class="course">
+<div class="article">
   <v-layout row>
     <v-flex xs12>
       <v-card>
-        <v-error :net="neterror"></v-error>
-        <div>
+          <div>
           <v-tabs
-              dark
-              color="purple lighten-1"
               grow
+              v-model="currentTab"
           >
-            <v-tabs-slider color="yellow"></v-tabs-slider>
-            <v-tab
-              v-for="(title,index) in articletitles"
-              :key="index"
-              @click="currentTab=title"
-            >
-            {{ title }}
-            </v-tab>
+          <v-tab
+           v-for="(title,index) in articlegroups"
+           :key="index"
+           @click="currentTab=title"
+          >
+            <strong class="font">{{ title }}</strong>
+          </v-tab>
           </v-tabs>
-        </div>
-
-        <v-list two-line v-show="currentTab==='学习心得'">
-          <template v-for="(item, index) in xxxds">
-            <v-list-tile :key="index" avatar ripple @click="goArticle(item.id)"><!--编辑式导航-->
+          </div>
+        <v-progress-linear :indeterminate="loading" height="5"></v-progress-linear>
+        <v-list v-for="(group,index) in articlegroups" :key="index" v-show="currentTab===index">
+          <template v-for="(item,index1) in articles[index]">
+            <v-list-tile
+              :key="item.title"
+              avatar
+              @click="goarticle(item.id)"
+            >
+              <v-list-tile-avatar class="font">
+                {{index1+1}}
+              </v-list-tile-avatar>
               <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
+                <v-list-tile-title v-html="item.title" class="font"></v-list-tile-title>
+                <v-list-tile-sub-title v-html="item.abstract" class="font"></v-list-tile-sub-title>
               </v-list-tile-content>
-              <v-list-tile-action>
-                <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text>
-                <v-icon color="grey lighten-1">star_border</v-icon>
-              </v-list-tile-action>
             </v-list-tile>
-            <v-divider v-if="index + 1 < xxxds.length" :key="`divider-${index}`"></v-divider>
-          </template>
-        </v-list>
-
-        <v-list two-line v-show="currentTab==='旅行日记'">
-          <template v-for="(item, index) in lxrjs">
-            <v-list-tile :key="index" avatar ripple @click="goArticle(item.id)"><!--编辑式导航-->
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text>
-                <v-icon color="grey lighten-1">star_border</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-divider v-if="index + 1 < lxrjs.length" :key="`divider-${index}`"></v-divider>
-          </template>
-        </v-list>
-
-        <v-list two-line v-show="currentTab==='生活点滴'">
-          <template v-for="(item, index) in shdds">
-            <v-list-tile :key="index" avatar ripple @click="goArticle(item.id)"><!--编辑式导航-->
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text>
-                <v-icon color="grey lighten-1">star_border</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-divider v-if="index + 1 < shdds.length" :key="`divider-${index}`"></v-divider>
-          </template>
-        </v-list>
-
-        <v-list two-line v-show="currentTab==='我的大学'">
-          <template v-for="(item, index) in wddxs">
-            <v-list-tile :key="index" avatar ripple @click="goArticle(item.id)"><!--编辑式导航-->
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text>
-                <v-icon color="grey lighten-1">star_border</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-divider v-if="index + 1 < wddxs.length" :key="`divider-${index}`"></v-divider>
-          </template>
-        </v-list>
-
-        <v-list two-line v-show="currentTab==='年少有你'">
-          <template v-for="(item, index) in nsyns">
-            <v-list-tile :key="index" avatar ripple @click="goArticle(item.id)"><!--编辑式导航-->
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-                <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-                <v-list-tile-action-text>{{ item.action }}</v-list-tile-action-text>
-                <v-icon color="grey lighten-1">star_border</v-icon>
-              </v-list-tile-action>
-            </v-list-tile>
-            <v-divider v-if="index + 1 < nsyns.length" :key="`divider-${index}`"></v-divider>
           </template>
         </v-list>
 
@@ -107,36 +42,30 @@
 </div>
 </template>
 <style scoped>
-.course{
+.article{
     position: relative;
     width: 100%;
     margin-top: 20px;
 }
+.font{
+  font-size: 1vw;
+  margin: 0;
+  padding: 0;
+}
 </style>
+
 <script>
-import vError from '../neterror.vue'
 export default {
   data: () => ({
-    currentTab: '学习心得',
-    articletitles: ["学习心得","旅行日记","生活点滴","我的大学","年少有你"],
-    xxxds: [
-      {
-        action: '15min',
-        title: '日常感想',
-        subtitle: '日常感想'
-      }
-    ],
-    lxrjs: [{}],
-    shdds:[{}],
-    wddxs:[{}],
-    nsyns:[{}],
-    others: [{}],
-    neterror: false
+    articlegroups: [],
+    articles: [],
+    currentTab: 0,
+    loading: false,
   }),
   methods: {
-    goArticle: function(id){
-      const _this = this;
-      _this.$axios({
+    goarticle: function(id){
+      this.loading = true;
+      this.$axios({
         method: "GET",
         url: "/article",
         params: {
@@ -144,45 +73,58 @@ export default {
         }
       })
       .then(res => {
-        let arti = res.data.article;
-        //console.log(arti);//测试是否成功获取文章
-        _this.$store.commit('set_article',arti);//将数据通过vuex传递到显示界界面
-        _this.$router.push('/home/display1');
+        let article = res.data.article;
+        let paths = [
+          {
+            text: '教程',
+            disabled: false,
+            href: '/home/mainpage',
+          },{
+            text: article.group,
+            disabled: false,
+            href: '/home/mainpage'
+          },{
+            text: article.title,
+            disabled: true,
+          }
+        ]
+        this.loading = false;
+        this.$store.commit('set_display_course',article);//将数据通过vuex传递到显示界界面
+        this.$store.commit('set_display_paths',paths);
+        this.$router.push('/home/display');
       })
       .catch(err => {
-        //_this.$router.push('/home/notfound');
-        //应该修改此处设置使得不同状态码显示不同的信息
-        _this.neterror = true;
-        setTimeout(() => {
-          _this.neterror = false;
-        }, 4000);
+        this.$router.push('/home/notfound');
+        
       })
+    },
+    indexOf: function(array,item){
+      for (let i = 0; i < array.length; i++) {
+        const element = array[i];
+        if (item==element){
+          return i;
+        }
+      }
+      return -1;
     }
   },
-  created: function(){
-    const _this = this;
-    _this.$axios({
-      method: 'GET',
-      url: '/articletitles'
-    })
-    .then(res=> {
-      const titles = res.data.titles;
-      _this.xxxds = titles[0];
-      _this.lxrjs = titles[1];
-      _this.shdds = titles[2];
-      _this.wddxs = titles[3];
-      _this.nsyns = titles[4];
-      _this.others = titles[5];
-    })
-    .catch(err => {
-      _this.neterror = true;
-      setTimeout(() => {
-        _this.neterror = false;
-      }, 4000);
-    })
-  },
-  components: {
-    vError
+  created: async function(){
+    try{
+      let response = await this.$axios.get('/articlegroups');
+      this.articlegroups = await response.data.groups;
+      for (let j = 0; j < this.articlegroups.length; j++) {
+        this.articles.push([]);
+      }
+      let response2 = await this.$axios.get('/article?title=true');
+      let results = response2.data.articles;
+      for (let i = 0; i < results.length; i++) {
+        const element = results[i];
+        let index = this.indexOf(this.articlegroups,element.group);
+        this.articles[index].push(element);
+      }
+    } catch(e){
+      this.$message.error('信息获取错误，请稍后重试');
+    }
   }
 }
 </script>

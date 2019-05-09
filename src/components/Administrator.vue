@@ -49,6 +49,17 @@ export default {
       status: 1,
       myVal: undefined
     }),
+    mounted: function(){
+      this.$axios.get('/login?vali=true')
+      .catch(err => {
+        if(err.response){
+          if(err.response.status==401){
+            this.$message.error('登录失效,请重新登录');
+            this.$router.push('/login');
+          }
+        }
+      })
+    },
     created: function(){
       //console.log('上');
       this.myVal = setInterval(() => {
@@ -67,7 +78,7 @@ export default {
         .catch(err => {
           //console.log('错误');
           if(err.response){
-            if(err.response.status==403){
+            if(err.response.status==401){
               this.status = 0;
             }
           };

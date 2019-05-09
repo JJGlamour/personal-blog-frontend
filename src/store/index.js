@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { stat } from 'fs';
+import article_course from './modules/article_course'
 Vue.use(Vuex);
 
 const moduleMessage = {//可以放到另外文件当中
@@ -13,7 +13,33 @@ const moduleMessage = {//可以放到另外文件当中
         }
     }
 }
-
+const moduleDisplay = {
+    state: {
+        dislpay_course: {},
+        display_paths: [
+            {
+                text: '主页',
+                disabled: false,
+                href: '/home/mainpage',
+            },{
+                text: '分类',
+                disabled: false,
+                href: '/home/mainpage',
+            },{
+                text: '无标题',
+                disabled: true,
+            }
+        ],//用于显示导航栏
+    },
+    mutations: {
+        set_display_course: function(state,course){
+            state.dislpay_course = course;
+        },
+        set_display_paths: function(state,paths){
+            state.display_paths = paths;
+        }
+    }
+}
 const moduleAdmin = {
     state: {
         user: "",
@@ -36,21 +62,6 @@ const moduleAdmin = {
     }
 }
 
-const moduleArticleCourse = {
-    state: {
-        article: {},
-        course: {}
-    },
-    mutations: {
-        set_article(state,article){
-            state.article = article;//请求某一篇文章
-            //console.log('收到文章：'+article.content);
-        },
-        set_course(state,course){
-            state.course = course;
-        }
-    }
-}
 const store =  new Vuex.Store({
     state: {
 
@@ -61,7 +72,8 @@ const store =  new Vuex.Store({
     modules: {
         a: moduleMessage,
         b: moduleAdmin,
-        c: moduleArticleCourse,
+        display: moduleDisplay,
+        article_course: article_course
     },
     getters:{
 

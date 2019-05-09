@@ -13,17 +13,13 @@
     </v-btn>
     <v-dialog v-model="dialog" width="800px">
       <v-card>
-        <v-card-title
-          class="grey lighten-4 py-4 title"
-        >
-          添加留言
-        </v-card-title>
+        
         <v-container grid-list-sm class="pa-4">
           <v-layout row wrap>
             <v-flex xs12 align-center justify-space-between>
               <v-layout align-center>
                 <v-text-field
-                  prepend-icon="notes"
+                  
                   placeholder="留言内容"
                   v-model="message.content"
                 ></v-text-field>
@@ -31,14 +27,14 @@
             </v-flex>
             <v-flex xs12>
               <v-text-field
-                prepend-icon="account_box"
+                
                 placeholder="昵称"
                 v-model="message.author"
               ></v-text-field>
             </v-flex>
             <v-flex xs12>
               <v-text-field
-                prepend-icon="mail"
+                
                 placeholder="Email(选填)"
                 v-model="message.email"
               ></v-text-field>
@@ -47,8 +43,8 @@
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn  @click="dialog = false" small round>取消</v-btn>
-          <v-btn @click="submitmsg" :loading="loading" color="info" small round>发表</v-btn>
+          <v-btn  @click="dialog = false" round>取消</v-btn>
+          <v-btn @click="submitmsg" :loading="loading" color="info" round>发表</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>

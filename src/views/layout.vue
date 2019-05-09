@@ -129,4 +129,9 @@ export default {
   transform: translateX(50px);
   opacity: 0;
 }
+.font{
+  font-size: 1vw;
+  margin: 0;
+  padding: 0;
+}
 </style>

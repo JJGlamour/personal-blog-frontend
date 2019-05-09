@@ -34,7 +34,7 @@ http.interceptors.response.use(
                     //console.log("拦截器：验证失败");
                     //localStorage.removeItem('Authorization');
                     store.commit('del_token');
-                    router.push('/login');   //服务器未授权，同样会重定向到登陆界面，之后重新登录获取新的token
+                    //router.push('/login');   //服务器未授权，同样会重定向到登陆界面，之后重新登录获取新的token
                 } break;
                 // case 404: {
                 //     console.log("404： 找不到相关资源");

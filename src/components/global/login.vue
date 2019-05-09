@@ -6,7 +6,7 @@
       <v-card> 
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-toolbar dark color="blue darken-1">
-            <v-toolbar-title>管理员登录</v-toolbar-title>
+            <v-toolbar-title>BLOG管理员登录</v-toolbar-title>
           </v-toolbar>
           <br>
           <v-text-field
@@ -32,15 +32,12 @@
             :disabled="!valid"
             @click="submit"
             color="info"
-            small
-            round
+        
           >
             登录
           </v-btn>
-          <v-btn @click="clear" small round>清空</v-btn>
-          <br><br>
-          <v-btn to='/home/navi' small outline flat><small>跳过登录直接进入主页</small></v-btn>
-          <br>
+        
+         
         </v-form>
       </v-card>
     </v-flex>
@@ -90,8 +87,6 @@ export default {
           }
         })
         .then(res => {
-          //console.log("嗯？？"+res);
-          //console.log("啊？"+res.data.token);
           loading.close();
           _this.token = res.data.token;  //登陆成功后后端直接返回token
           _this.set_token(_this.token);//将token存入vuex

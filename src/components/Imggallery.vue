@@ -2,16 +2,17 @@
 <div>
     <div class="content">
          <v-flex xs12 sm12 md12>
-            <br>
+            <v-progress-linear
+                background-color="purple lighten-3"
+                color="blue darken-1"
+                :indeterminate="true"
+            ></v-progress-linear>
             <v-card>
                 <h2>照片墙</h2>
             </v-card>
-            <br>
         </v-flex>
-        
     </div>
     <v-content></v-content>
-
 </div>
 </template>
 

@@ -4,6 +4,7 @@ import store from './store'//引入非常有用
 Vue.use(Router)
 
 const router = new Router({
+  mode: 'history',
   routes: [
     {
       path: '/',
@@ -12,6 +13,10 @@ const router = new Router({
       path: '/login',//进入管理员登录界面
       name: 'login',
       component: () => import('./components/global/login.vue')
+    },{
+      path: '/displaytool',
+      name: 'displaytool',
+      component: () => import('./views/Displaytool.vue')
     },
     {
       path: '/home',
@@ -52,8 +57,8 @@ const router = new Router({
           name: 'about',
           component: () => import('./components/About.vue')
         },{
-          path: 'display1',
-          name: 'display1',
+          path: 'display',
+          name: 'display',
           component: () => import('./components/mainpage/article/display.vue')
         },{
           path: 'display2',
@@ -65,11 +70,11 @@ const router = new Router({
           meta: {
             requireAuth: true,//添加该字段，表示这个路由是需要登陆的
           },
-          redirect: '/home/administrator/navagation',
+          redirect: '/home/administrator/navigation',
           component: () => import('./components/Administrator.vue'),
           children: [
             {
-              path: 'navagation',
+              path: 'navigation',
               name: 'navigation',
               component: () => import('./components/administrator/navigation.vue'),
               meta: {
@@ -99,6 +104,11 @@ const router = new Router({
               meta: {
                 requireAuth: true
               }
+            },
+            {
+              path: 'editmd',
+              name:'editmd',
+              component: () => import('./components/administrator/editmd.vue'),
             },
             {
               path: 'article',

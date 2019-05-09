@@ -4,10 +4,20 @@
       <v-layout row wrap justify-center align-center>
           <v-flex xs12 small12 md12>
               <v-card dark color="white">
+                <v-progress-linear
+                background-color="purple"
+                color="blue darken-1"
+                :indeterminate="true"
+            ></v-progress-linear>
                 <h2 style="color:black;">欢迎来到我的博客，你想看的都在这</h2>
+                <v-progress-linear
+                background-color="purple lighten-3"
+                color="blue darken-1"
+                :indeterminate="true"
+            ></v-progress-linear>
               </v-card>
           </v-flex>
-          <v-flex xs12 smll md6 v-for="(item,index) in items" :key=index>
+          <v-flex xs12 smll md4 lg4 xl4 v-for="(item,index) in items" :key=index>
               <v-card>
                     <v-hover>
                         <v-card
@@ -45,7 +55,7 @@
                             >
                                 <v-icon>forward</v-icon>
                             </v-btn>
-                            <h3 class="display-0 font-weight-light blue--text mb-2">{{ item.title }}</h3>
+                            <h3 class="display-0 font-weight-light blue--text mb-2" @click="goto(item.path)">{{ item.title }}</h3>
                         </v-card-text>
                         </v-card>
                     </v-hover>
@@ -70,7 +80,7 @@ export default {
             imgsrc: require('./images/message.jpg')
         },{
             title: "个人信息",
-            desc:"喜欢玩那种色色的小游戏嘛",
+            desc:"爱你哟",
             path: "/home/information",
             imgsrc: require('./images/cute.jpeg')
         },{
@@ -83,6 +93,11 @@ export default {
             desc: "与大家分享心得",
             path: "/home/about",
             imgsrc: require('./images/jianjie.jpeg')
+        },{
+            title: '管理员登录',
+            desc: '后台管理',
+            path: '/login',
+            imgsrc: require('./images/university.jpeg')
         }],
         imgsrc: require('./images/book.jpeg')
     }),

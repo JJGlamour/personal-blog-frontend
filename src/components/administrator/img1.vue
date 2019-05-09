@@ -42,12 +42,13 @@
             style="width:100%" 
             @selection-change="handleSelectionChange" 
             stripe
-            :default-sort = "{prop: 'id', order: 'ascending'}"
+            :default-sort = "{prop: 'id', order: 'descending'}"
             >
-
-                <el-table-column type="selection" width="100" align="center">
+                <el-table-column type="selection" width="80" align="center">
                 </el-table-column>
-                <el-table-column label="编号" width="100" sortable prop="id" align="center">
+                <el-table-column label="序号" width="80" sortable align="center" type="index">
+                </el-table-column>
+                <el-table-column label="ID" width="80" sortable prop="id" align="center">
                     <template slot-scope="scope">{{ scope.row.id }}</template>
                 </el-table-column>
                 <el-table-column label="图片备注" width="150" sortable prop="id" align="center">
@@ -57,10 +58,8 @@
                     <template slot-scope="scope"><v-img :aspect-ratio="16/9" :src='scope.row.src'></v-img></template>
                 </el-table-column>
                 <el-table-column label="上传时间" width="220" prop="date" sortable align="center">
-                    <template slot-scope="scope">{{ scope.row.time}}</template>
+                    <template slot-scope="scope">{{ scope.row.date}}</template>
                 </el-table-column>
-                
-    
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
                         <el-button size="mini" type="danger" @click="handleDelete(scope.row.id)">删除</el-button>
@@ -70,7 +69,6 @@
             </el-table>
             <v-btn outline round color="info" @click="moreGet">查看更多</v-btn>
             <v-btn outline round color='error' @click="multiSure=true" :disabled="multi.length==0">多选删除</v-btn>
-
         </div>
     </div>
     <v-dialog v-model="deleteSure" persistent width="500">
@@ -79,7 +77,6 @@
                 <span>确认删除</span>
             </v-card-title>
             <v-card-text>
-                
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -113,7 +110,7 @@
                 <small class="red--text">点击确定后才可生效，内容不能为空，字数不超过100</small>
                 <br>
                 <el-input
-                    v-model="remarks[editId-1]"
+                    v-model="editRemark"
                     clearable>
                 </el-input>
             </v-card-text>
@@ -133,12 +130,13 @@ export default {
         show: true,
         groups: ['个人写真','校园春色','我的家乡','其他',],
         group: '个人写真',
-        imgNums: [],
-        pages: [],//为了图片分批次请求使用，但考虑到图片数量不多，可以一次性全部请求
+        imgNums: [0,0,0,0],//各类图片总数
+        pages: [1,1,1,1],//为了图片分批次请求使用，但考虑到图片数量不多，可以一次性全部请求
         groupsEng: ['grxz','xycs','wdjx','qt'],
         imgSrc: [],
-        date: [],
-        remarks: [],
+        imgDate: [],
+        imgRemark: [],
+        imgId: [],
         style: { padding: '11px' },
         gotten_imgs: 0,
         each_get: 10,
@@ -148,11 +146,14 @@ export default {
         multiSure: false,
         editSure: false,
         editId: 0,
+        editRemark: '',
+        imgs:[]
     }),
     methods: {
         back: function(){
             this.$router.go(-1);
         },
+        //查找元素在数组中的索引
         search: function(item,list){
             for (let i = 0; i< list.length; i++) {
               const element = list[i];
@@ -162,6 +163,7 @@ export default {
             }
             return false;
         },
+        //数组总数求和
         sum: function(array){
             let j = 0;
             for (let i = 0; i < array.length; i++) {
@@ -185,14 +187,18 @@ export default {
                 method: 'delete',
                 url: '/img',
                 params: {
-                    group_for_delete: this.groupsEng[this.search(this.group,this.groups)],
-                    index_for_delete: id-1,
+                    group: this.groupsEng[this.search(this.group,this.groups)],
+                    id: id,
                 }
             })
             .then(res => {
-                this.imgSrc.splice(id-1,1);
-                this.date.splice(id-1,1);
-                this.remarks.splice(id-1,1);
+                for (let i = 0; i < this.imgs.length; i++) {
+                    const element = this.imgs[i];
+                    if(element.id==id){
+                        this.imgs.splice(i,1);
+                        break;
+                    }
+                }
                 this.$message.success('删除成功');
             })
             .catch(err => {
@@ -210,14 +216,21 @@ export default {
                 method: 'put',
                 url: '/img',
                 data:{
-                    group_for_edit: this.groupsEng[this.search(this.group,this.groups)],
-                    index_for_edit: id-1,
-                    new_remark: this.remarks[id-1],
+                    group: this.groupsEng[this.search(this.group,this.groups)],
+                    id: id,
+                    new_remark: this.editRemark
                 }
             })
             .then(res => {
                 if(res.data){
-                    this.$message.success(res.data.ok);
+                    this.$message.success("修改成功");
+                    for (let i = 0; i < this.imgs.length; i++) {
+                        const element = this.imgs[i];
+                        if(element.id==id){
+                            this.imgs[i].remark = this.editRemark;
+                            break;
+                        }
+                    }
                 }
                 else{
                     this.$message({
@@ -238,17 +251,31 @@ export default {
         },
         handleEdit: function(id){
             this.editId = id;
-            //console.log(this.editId);
             this.editSure = true;
+                for (let i = 0; i < this.imgs.length; i++) {
+                    const element = this.imgs[i];
+                    if(element.id==id){
+                        this.editRemark = element.remark;
+                        break;
+                    }
+                }
         },
         handleGroup: function(){
             this.gotten_imgs = 0;
-            this.imgSrc = [],
-            this.date = [],
-            this.remarks = [],
-            this.threeGet(this.group,this.gotten_imgs+1);
+            this.imgs = [];
+            for (let i = 0; i < this.each_get; i++) {
+                this.getImg(this.group,this.gotten_imgs+1);
+                this.gotten_imgs += 1;
+                if(this.gotten_imgs>=this.imgNums[0]){
+                        this.$message({
+                        message: '已加载完毕',
+                        type: 'warning'
+                        });
+                    return;
+                }
+            }
         },
-        getImg: function(group,number,k){
+        getImg: function(group,number){//group传递的是中文
             const _this = this;
             let index;
             for (let i = 0; i < this.groups.length; i++) {
@@ -258,35 +285,18 @@ export default {
                     break;
                 }
             }
-            if(number > this.imgNums[index]){
-                this.$message({
-                    message: '已全部加载',
-                    type: 'warning'
-                })
-                return;
-            }
-            if(k >= this.each_get){
-                return;//k表示每次请求之前已经获取的照片数
-            }
             _this.$axios({
                 url: '/img',
                 method: 'get',
-                responseType: 'arraybuffer',
                 params: {
                     group: this.groupsEng[index],
                     number: number//每张图片索引
                 }
             })
             .then(res => {
-                let src = 'data:image/png;base64,'+btoa(new Uint8Array(res.data).reduce((data,byte)=>data+String.fromCharCode(byte),''));
-                _this.imgSrc.push(src);
-                //_this.imgsrc.splice(i,0,src);
-                this.gotten_imgs += 1; //从0开始
-                //console.log(this.gotten_imgs);
-                _this.getImg(group,number+1,++k);//递归调用
+                this.imgs.push(res.data.img);
             })
             .catch(err => {
-                //console.log(err);
                 if(err.response){
                     switch(err.response.status)
                     {
@@ -305,98 +315,19 @@ export default {
                 }
             });
         },
-        getImgRemark: function(group,number,k){
-            const _this = this;
-            let index;
-            for (let i = 0; i < this.groups.length; i++) {
-                const element = this.groups[i];
-                if(group==element){
-                    index = i;
-                    break;
-                }
-            }
-            if(k>=this.each_get){
-                return;
-            }
-            if(number > this.imgNums[index]){
-                return;
-            }
-            _this.$axios({
-                url: '/img',
-                method: 'get',
-                params: {
-                    group_for_desc: this.groupsEng[index],
-                    number_for_desc: number//每张图片索引
-                }
-            })
-            .then(res => {
-                _this.remarks.push(res.data.remark);
-                //_this.imgsrc.splice(i,0,src);
-                _this.getImgRemark(group,number+1,++k);//递归调用
-            })
-            .catch(err => {
-                //console.log(err);
-                if(err.response){
-                    switch(err.response.status)
-                    {
-                        case 404: 
-                            _this.$message.error('404未找到对应资源');
-                            break;
-                        default:
-                            _this.$message.error('服务器资源出现错误，请稍后重试');
-                    }
-                }
-                else{
-                    _this.$message.error('服务器资源出现错误，请稍后重试');
-                }
-            }); 
-        },
-        getImgDate: function(group,number,k){
-            const _this = this;
-            let index;
-            for (let i = 0; i < this.groups.length; i++) {
-                const element = this.groups[i];
-                if(group==element){
-                    index = i;
-                    break;
-                }
-            }
-            if(number > this.imgNums[index]){
-                return;
-            }
-            if(k>=this.each_get){
-                return;
-            }
-            _this.$axios({
-                url: '/img',
-                method: 'get',
-                params: {
-                    group_for_date: this.groupsEng[index],
-                    number_for_date: number//每张图片索引
-                }
-            })
-            .then(res => {
-                _this.date.push(res.data.date);
-                //_this.imgsrc.splice(i,0,src);
-                _this.getImgDate(group,number+1,++k);//递归调用
-            })
-            .catch(err => {
-                //console.log(err);
-                if(err.response){
-                    _this.$message.error(err.response.data.error)
-                }
-                else{
-                    _this.$message.error('服务器资源出现错误，请稍后重试');
-                }
-            }); 
-        },
-        threeGet: function(group,number){
-            this.getImg(group,number,0);
-            this.getImgRemark(group,number,0);
-            this.getImgDate(group,number,0);
-        },
         moreGet: function(){
-            this.threeGet(this.group,this.gotten_imgs+1);
+            for (let i = 0; i < this.each_get; i++) {
+                if(this.gotten_imgs>=this.imgNums[0]){
+                        this.$message({
+                        message: '已加载完毕',
+                        type: 'warning'
+                        });
+                    return;
+                }
+                this.getImg(this.group,this.gotten_imgs+1);
+                this.gotten_imgs += 1;//异步操作，这个不太严谨
+
+            }
         }
     },
     created: function(){
@@ -405,23 +336,34 @@ export default {
             url: '/img',
             method: 'get',
             params: {
-                itemsforpage: _this.groupsEng.toString()
+                itemsfornums: _this.groupsEng.toString()
             }
         })
         .then(res => {
             //console.log(res.data)
-            let nums = res.data.groupnums;//每种类型图片各自总数
+            let nums = res.data.imgnums;//每种类型图片各自总数
             _this.imgNums = nums;
             let pages = [];
             for (let i = 0; i < _this.groups.length; i++) {
-                let page = Math.ceil(nums[i]/10);//每次显示10张图片
+                let page = Math.ceil(nums[i]/this.each_get);//每次显示10张图片
                 if(page<=0){
                     page = 1;
                 }
                 pages.push(page);
             }
             _this.pages = pages;
-            //_this.getimg(this.itemseng[index],this.page);
+
+            for (let i = 0; i < this.each_get; i++) {
+                this.getImg(this.groups[0],this.gotten_imgs+1);
+                this.gotten_imgs += 1;
+                if(this.gotten_imgs>=this.imgNums[0]){
+                        this.$message({
+                        message: '已加载完毕',
+                        type: 'warning'
+                        });
+                    return;
+                }
+            }
         })
         .catch(err => {
             if(err.response){
@@ -431,22 +373,7 @@ export default {
                 _this.$message.error('图片页码获取出现错误');
             }
         });
-        this.threeGet(this.group,this.gotten_imgs+1);  
     },
-    computed: {
-        imgs: function(){
-            let array = [];
-            for (let i = 0; i < this.date.length; i++) {
-                const element = this.date[i];
-                let each = {};
-                each.id = i+1;
-                each.time = element;
-                each.src = this.imgSrc[i];
-                each.remark = this.remarks[i];
-                array.push(each);
-            }
-            return array;
-        }
-    }
+
 }
 </script>

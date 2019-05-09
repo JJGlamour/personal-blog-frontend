@@ -1,57 +1,51 @@
 <template>
-<div class="main">
-    <v-container fluid grid-list-md title-xs-center>
-        <v-layout align-center justify-center wrap row>
-            <v-flex xs12 sm12 md12 >
-                <v-card>
-                    <h2>标题：{{ arti.title }}</h2>
-                </v-card>
+    <div class="main">
+        <v-layout align-center row wrap>
+            <v-flex xl8 sm8 md8>
+                <v-breadcrumbs :items="paths" divider=">"></v-breadcrumbs>
             </v-flex>
-            <v-flex xs6 sm6 md6>
-                <v-card>
-                    <h3>编辑时间：{{ arti.time }}</h3>
-                </v-card>
-            </v-flex>
-            <v-flex xs6 sm6 md6>
-                <v-card>
-                    <h3>作者： {{ arti.author }}</h3>
-                </v-card>
+            <v-flex xl4 sm4 md4>
+                <v-btn icon><v-icon color="pink">favorite</v-icon>4</v-btn>
+                <v-btn icon><v-icon color="blue">visibility</v-icon>4</v-btn>
+                <v-btn small round color="primary" @click="back">返回</v-btn>
             </v-flex>
             <v-flex xs12 sm12 md12>
-                <v-card>
-                    <span v-html="arti.content"></span>
-                </v-card>
+                <mavon-editor v-model="ar_co.content" :subfield="false" :defaultOpen="defaultData" :toolbarsFlag="false" :boxShadow="false"/>
             </v-flex>
-            <v-flex xs12 sm12 md12>
-                <v-card><span>备注：{{ arti.remark }}</span></v-card>
-            </v-flex>
-            <v-back></v-back>
         </v-layout>
-    </v-container>
-</div>
+        
+    </div>
 </template>
 <style scoped>
 .main{
     text-align: center;
+    position: relative;
 }
 </style>
 <script>
 import vBack from '../goback.vue'
 export default {
     data: ()=>({
-        arti: {
-            title: "",
-            time: "",
-            author: "",
-            content: "",
-            remark: ""
-        }
+        defaultData: "preview",
+        value: ''
     }),
     mounted: function(){
-        this.arti = this.$store.state.c.article;
+ 
+        
     },
-    components: {
-        vBack
+    methods: {
+        back: function(){
+            this.$router.go(-1);
+        }
+    },
+    computed: {
+        paths: function(){
+            return this.$store.state.display.display_paths;
+        },
+        ar_co: function(){
+            //用于判断是文档重新修改还是文档新建
+            return this.$store.state.display.dislpay_course;
+        }
     }
 }
 </script>
