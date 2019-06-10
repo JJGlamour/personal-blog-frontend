@@ -59,11 +59,11 @@ const router = new Router({
         },{
           path: 'display',
           name: 'display',
-          component: () => import('./components/mainpage/article/display.vue')
-        },{
-          path: 'display2',
-          name: 'display2',
-          component: ()=> import('./components/mainpage/course/display.vue')
+          component: () => import('./components/mainpage/article/display.vue'),
+          props: (route) => ({
+            query: route.query.id,
+            query: route.query.type,
+          })
         },{
           path: 'administrator',
           name: 'administrator',

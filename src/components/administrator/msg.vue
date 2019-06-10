@@ -153,23 +153,26 @@ export default {
             this.editmsg = row;
             this.edit = true;
         },
+        //删除留言以后用于页面删除留言
+        tmpdelete: function(id){
+            for(let i = 0; i < this.msgs.length; i ++ ){
+                const element = this.msgs[i];
+                if(element.id === id){
+                    this.msgs.splice(i,1);
+                    return;
+                }
+            }
+        },
         handleDelete: function(index,row){
             //console.log(index,row.id);
             this.makesure = true;
             this.deletemsg = row;
-            // this.deletemsg.id = row.id;
-            // this.deletemsg.content = row.content;
-            // this.deletemsg.email = row.email;
-            // this.deletemsg.author = row.author;
-            // this.deletemsg.admire = row.admire;
-            this.deletemsg.index = index;//这个参数用于显示删除
         },
         deleteSure: function(id){
             this.makesure = false;
-            const _this = this;
             if(id){
                 //console.log("请求数据");
-                _this.$axios({
+                this.$axios({
                     method: 'delete',
                     url: '/msg',
                     params: {
@@ -177,12 +180,12 @@ export default {
                     }
                 })
                 .then(res => {
-                    _this.makesure = false;
-                    _this.msgs.splice(_this.deletemsg.index,1);
-                    _this.$message.success(res.data.ok);
+                    this.makesure = false;
+                    this.tmpdelete(id);
+                    this.$message.success(res.data.ok);
                 })
                 .catch(err => {
-                    _this.makesure = false;
+                    this.makesure = false;
                     if(err.response){
                         this.$message.error("登录已失效，请重新登录");
                     }

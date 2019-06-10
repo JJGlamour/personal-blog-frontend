@@ -189,7 +189,7 @@ export default {
             this.submitload = false;
             this.deleteAll();
         },
-        submitEach: function(i){
+        submitEach: async function(i){
             if(i >= this.files.length){
                 return;
             }
@@ -199,56 +199,66 @@ export default {
             formdata.append('remark',this.remark[i]);
             this.uploading = i+1;
             this.progress = 0;
-            this.$axios({
-                url: '/img',
-                method: 'post',
-                data: formdata,
-                headers: {
-                    'Content-Type':'multipart/form-data'
-                },
-                onUploadProgress: ProgressEvent => {
-                    if(ProgressEvent.lengthComputable){
-                        let num = Math.floor((ProgressEvent.loaded / ProgressEvent.total)  * 100);
-                        this.progress = num;
+            try{
+                await this.$axios({
+                    url: '/img',
+                    method: 'post',
+                    data: formdata,
+                    headers: {
+                        'Content-Type':'multipart/form-data'
+                    },
+                    onUploadProgress: ProgressEvent => {
+                        if(ProgressEvent.lengthComputable){
+                            let num = Math.floor((ProgressEvent.loaded / ProgressEvent.total)  * 100);
+                            this.progress = num;
+                        }
                     }
-                }
-            })
-            .then(res => {
-                this.finished = i+1;
-                this.submitEach(i+1);
-            })
-            .catch(err => {
-                let j = i+1;
-                //console.log("失败")
+                })
+            }catch(e){
                 this.progress = 0;
-                if(err.response){
-                    //console.log(err.response);
-                    if(err.response.status==403){
-                        this.$message.error('第'+j+'张图片不符合要求');
-                    }
-                    else if(err.response.status==401){
-                        this.$message.error('登录已失效，请重新登录');
-                    }
-                    else if(err.response.status==413){
-                        this.$message.error('第'+j+"张图片过大,请重新调整大小");
-                    }
-                    else{
-                        this.$message.error('第'+j+'张图片上传失败');
-                    }
-                }
-                else{
-                    this.$message.error('上传失败,请检查第'+j+'张图片大小或稍后重试');
-                }
-            })
+                let j = i + 1;
+                this.$message.error('第' + j + '张图片上传失败，请注意图片大小');
+                return;
+            }
+            this.finished = i + 1;
+            this.submitEach(i+1);
+            // .then(res => {
+            //     this.finished = i+1;
+            //     this.submitEach(i+1);
+            // })
+            // .catch(err => {
+            //     let j = i+1;
+            //     //console.log("失败")
+            //     this.progress = 0;
+            //     if(err.response){
+            //         //console.log(err.response);
+            //         if(err.response.status==403){
+            //             this.$message.error('第'+j+'张图片不符合要求');
+            //         }
+            //         else if(err.response.status==401){
+            //             this.$message.error('登录已失效，请重新登录');
+            //         }
+            //         else if(err.response.status==413){
+            //             this.$message.error('第'+j+"张图片过大,请重新调整大小");
+            //         }
+            //         else{
+            //             this.$message.error('第'+j+'张图片上传失败');
+            //         }
+            //     }
+            //     else{
+            //         this.$message.error('上传失败,请检查第'+j+'张图片大小或稍后重试');
+            //     }
+            // })
         },
-        submitUpload: function(){
+        submitUpload: async function(){
             this.all = this.files.length;
             //把上一次上传的记录清空
             this.uploading = 0;
             this.finished = 0;
             this.submitload = true;
             if(this.files.length){
-                this.submitEach(0);
+                await this.submitEach(0);
+                this.$router.go(0);
             }
         }
     },

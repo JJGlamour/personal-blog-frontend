@@ -64,39 +64,7 @@ export default {
   }),
   methods: {
     goarticle: function(id){
-      this.loading = true;
-      this.$axios({
-        method: "GET",
-        url: "/article",
-        params: {
-          articleid: id
-        }
-      })
-      .then(res => {
-        let article = res.data.article;
-        let paths = [
-          {
-            text: '教程',
-            disabled: false,
-            href: '/home/mainpage',
-          },{
-            text: article.group,
-            disabled: false,
-            href: '/home/mainpage'
-          },{
-            text: article.title,
-            disabled: true,
-          }
-        ]
-        this.loading = false;
-        this.$store.commit('set_display_course',article);//将数据通过vuex传递到显示界界面
-        this.$store.commit('set_display_paths',paths);
-        this.$router.push('/home/display');
-      })
-      .catch(err => {
-        this.$router.push('/home/notfound');
-        
-      })
+        this.$router.push('/home/display?'+'type=article'+'&'+"id="+id);
     },
     indexOf: function(array,item){
       for (let i = 0; i < array.length; i++) {

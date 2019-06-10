@@ -23,15 +23,34 @@
 }
 </style>
 <script>
-import vBack from '../goback.vue'
 export default {
     data: ()=>({
         defaultData: "preview",
-        value: ''
+        value: '',
+        ar_co: {}
     }),
-    mounted: function(){
- 
-        
+    created: function(){
+        this.$axios({
+            method: "GET",
+            url: "/" + this.$route.query.type,
+            params: {
+                id: this.$route.query.id
+            }
+        })
+        .then(res => {
+            this.ar_co = res.data.result;
+        })
+        .catch(err => {
+            //this.$router.push('/home/notfound');
+            if(err.response){
+                if(err.response.status==404){
+                    this.$message.error('找不到对应资源');
+                    this.$router.push('/home/notfound');
+                    return;
+                }
+            }
+            this.$message.error('信息获取错误，请重试');
+        })
     },
     methods: {
         back: function(){
@@ -40,12 +59,22 @@ export default {
     },
     computed: {
         paths: function(){
-            return this.$store.state.display.display_paths;
+           let paths = [
+               {
+                   text: this.$route.query.type,
+                   disabled: false,
+                   href: '/home/mainpage'
+               },{
+                   text: this.ar_co.group,
+                   disabled: false,
+                   href: "/home/mainpage"
+               },{
+                   text: this.ar_co.title,
+                   disabled: true
+               }
+           ]
+           return paths;
         },
-        ar_co: function(){
-            //用于判断是文档重新修改还是文档新建
-            return this.$store.state.display.dislpay_course;
-        }
     }
 }
 </script>

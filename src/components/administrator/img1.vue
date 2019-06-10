@@ -204,6 +204,7 @@ export default {
             .catch(err => {
                 if(err.response){
                     this.$message.error(err.response.data.error);
+                    
                 }
                 else{
                     this.$message.error('删除失败');

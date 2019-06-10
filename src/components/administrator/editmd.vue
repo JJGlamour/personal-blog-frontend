@@ -36,7 +36,7 @@
             </v-flex>
             <v-flex xs12 sm12 md12>
                 <br>
-                <mavon-editor v-model="value"></mavon-editor>
+                <mavon-editor v-model="value"  @change="changeData"></mavon-editor>
             </v-flex>
         </v-layout>
         </v-container>
@@ -70,7 +70,7 @@ export default {
         id: undefined,
         remark: undefined,
         abstract: undefined,
-        setting: false
+        setting: false,
     }),
     methods: {
         getValue: function(value,html){
@@ -113,6 +113,11 @@ export default {
         },
         back: function(){
             this.$router.go(-1);
+        },
+        changeData: function(md,render) {
+            console.log(md);
+            console.log('**************');
+            console.log(render);
         }
     },
     mounted: function(){
