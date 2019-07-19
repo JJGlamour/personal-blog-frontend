@@ -17,17 +17,32 @@
     <v-flex xs12 sm12 md12>
         <v-card style="padding:10px;">
             <v-layout row wrap style="color:red;">
-                <v-flex xs4 sm4 md4>
+                <v-flex xs3 sm3 md3>
                     <div class="line">
                         <strong>标题</strong>
                     </div>
                 </v-flex>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs1 sm1 md1>
                     <div class="line">
                     <strong>作者</strong>
                     </div>
                 </v-flex>
-                <v-flex xs3 sm3 md3>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>分类</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>浏览量</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>点赞数</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs2 sm2 md2>
                     <div class="line">
                     <strong>更新时间</strong>
                     </div>
@@ -39,17 +54,32 @@
                 </v-flex>
             </v-layout>
             <v-layout row wrap v-for="(item,index) in articles" :key="index">
-                <v-flex xs4 sm4 md4>
+                <v-flex xs3 sm3 md3>
                     <div class="line">
                         <strong>{{item.title}}</strong>
                     </div>
                 </v-flex>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs1 sm1 md1>
                     <div class="line">
                     <strong>{{item.author}}</strong>
                     </div>
                 </v-flex>
-                <v-flex xs3 sm3 md3>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>{{item.group}}</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>{{item.total_views}}</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>{{item.like}}</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs2 sm2 md2>
                     <div class="line">
                     <span>{{item.updatetime}}</span>
                     </div>

@@ -22,22 +22,32 @@
                         <strong>标题</strong>
                     </div>
                 </v-flex>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs1 sm1 md1>
                     <div class="line">
                     <strong>作者</strong>
                     </div>
                 </v-flex>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs1 sm1 md1>
                     <div class="line">
                     <strong>分类</strong>
                     </div>
                 </v-flex>
-                <v-flex xs3 sm3 md3>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>浏览量</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>点赞数</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs2 sm2 md2>
                     <div class="line">
                     <strong>更新时间</strong>
                     </div>
                 </v-flex>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs3 sm3 md3>
                     <div class="line">
                          <strong>操作</strong>
                     </div>
@@ -49,22 +59,32 @@
                         <strong>{{item.title}}</strong>
                     </div>
                 </v-flex>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs1 sm1 md1>
                     <div class="line">
                     <strong>{{item.author}}</strong>
                     </div>
                 </v-flex>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs1 sm1 md1>
                     <div class="line">
                     <strong>{{item.group}}</strong>
                     </div>
                 </v-flex>
-                <v-flex xs3 sm3 md3>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>{{item.total_views}}</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
+                    <div class="line">
+                    <strong>{{item.like}}</strong>
+                    </div>
+                </v-flex>
+                <v-flex xs2 sm2 md2>
                     <div class="line">
                     <span>{{item.updatetime}}</span>
                     </div>
                 </v-flex>
-                <v-flex xs2 sm2 md2>
+                <v-flex xs3 sm3 md3>
                     <div class="line">
                          <el-button type="primary" icon="el-icon-edit" size="mini" @click="edit(item.id)"></el-button>
                          <el-button type="info" icon="el-icon-download" size="mini" @click="downloadsure(item.id)"></el-button>
@@ -73,14 +93,7 @@
                 </v-flex>
             </v-layout>
         </v-card>
-        <!-- <v-data-table :headers="headers" :items="courses">
-            <template v-slot:items="props">
-                <td>{{props.item.id}}</td>
-                <td>{{props.item.title}}</td>
-                <td>{{props.item.author}}</td>
-                <td>{{props.item.updatetime}}</td>
-            </template>
-        </v-data-table> -->
+   
     </v-flex>
 </v-layout>
 <v-dialog width="400" v-model="downloaddialog" persistent>
@@ -109,6 +122,8 @@
                     <v-card @click="download('word')">
                         <v-img :src='require("../images/word.svg")'></v-img>
                     </v-card>
+                </v-flex>
+                <v-flex xs1 sm1 md1>
                 </v-flex>
 
                 <v-flex xs3 sm3 md3>

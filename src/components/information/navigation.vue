@@ -37,7 +37,7 @@
     >
       <v-card>
         <v-card-title class="amber lighten-1 justify-end">
-          <h3 class="display-0 mr-3 white--text font-weight-light">兴趣爱好</h3>
+          <h3 class="display-0 mr-3 white--text font-weight-light">联系方式</h3>
           <v-icon
             dark
             size="42"
@@ -45,11 +45,11 @@
         </v-card-title>
         <v-container>
           <v-layout>
-            <v-flex xs12>
-              自律的顶端就是享受孤独
+            <v-flex xs6 sm6 md4 lg4>
+              <div><small>微信</small><v-img :src="require('./wechat.png')" :aspect-ratio="1/1"></v-img></div>
             </v-flex>
-            <v-flex xs4>
-              
+            <v-flex xs6 sm6 md4 lg4>
+              <div><small>qq</small><v-img :src="require('./qq.png')" :aspect-ratio="1/1"></v-img></div>
             </v-flex>
           </v-layout>
         </v-container>
@@ -70,16 +70,12 @@
           >
             mdi-email-outline
           </v-icon>
-          <h3 class="display-0 white--text font-weight-light">择偶标准</h3>
+          <h3 class="display-0 white--text font-weight-light">友情赞助</h3>
         </v-card-title>
         <v-container>
           <v-layout>
-            <v-flex
-              v-for="n in 3"
-              :key="n"
-              xs4
-            >
-              限女性！
+            <v-flex xs6 sm4 md4 lg4>
+              <div><small>赞助</small><v-img :src="require('./wechatmoney.png')" :aspect-ratio="1/1"></v-img></div>
             </v-flex>
           </v-layout>
         </v-container>

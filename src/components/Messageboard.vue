@@ -26,7 +26,7 @@
                             <v-btn 
                                 flat 
                                 color="pink" 
-                                @click="admire(index)" 
+                                @click="admire(msg)" 
                                 round
                                 small
                             >
@@ -106,21 +106,29 @@ export default {
                 _this.$message.error("留言获取错误，请稍后重试");
             })
         },
-        admire: function(index){
+        admire: function(msg){
             //console.log(this.messages[index].id);
             const _this = this;
-            _this.messages[index].admire ++;
-            this.$axios({
-                method: 'put',
-                url: '/msg',
-                params: {
-                    admiremsgid: this.messages[index].id
-                }//put方法不能params??
-            })
-            .catch(err => {
-                _this.$message.error("点赞失败，请稍后重试");
-                _this.messages[index].admire --;
-            })
+            let flag = `msg+${msg.id}`;
+            if (localStorage.getItem(flag)){
+                this.$message('已经点赞了哦');
+            }
+            else{
+                this.$axios({
+                    method: 'put',
+                    url: '/msg',
+                    params: {
+                        admiremsgid: msg.id
+                    }//put方法不能params??
+                })
+                .then(() => {
+                    msg.admire ++;
+                    localStorage.setItem(flag,'like');
+                })
+                .catch(err => {
+                    _this.$message.error("点赞失败，请稍后重试");
+                })
+            }
         }
     },
     mounted: async function(){

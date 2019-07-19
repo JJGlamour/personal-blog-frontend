@@ -1,10 +1,8 @@
 <template>
 <div class="content">
      <v-flex xs12 sm12 md12>
-            <v-progress-linear :indeterminate="true" height="15"></v-progress-linear>
             <v-card>
                 <h2>博客介绍</h2>
-                <v-progress-linear :indeterminate="true" height="15"></v-progress-linear>
             </v-card>
     </v-flex>
     <v-container fluid grid-list-md>

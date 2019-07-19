@@ -4,17 +4,7 @@
       <v-layout row wrap justify-center align-center>
           <v-flex xs12 small12 md12>
               <v-card dark color="white">
-                <v-progress-linear
-                background-color="purple"
-                color="blue darken-1"
-                :indeterminate="true"
-            ></v-progress-linear>
                 <h2 style="color:black;">欢迎来到我的博客，你想看的都在这</h2>
-                <v-progress-linear
-                background-color="purple lighten-3"
-                color="blue darken-1"
-                :indeterminate="true"
-            ></v-progress-linear>
               </v-card>
           </v-flex>
           <v-flex xs12 smll md4 lg4 xl4 v-for="(item,index) in items" :key=index>
@@ -75,17 +65,17 @@ export default {
             imgsrc: require('./images/jiaocheng.jpeg')
         },{
             title: "留言部分",
-            desc: "说出你想说的话",
+            desc: "个人留言板",
             path: "/home/messageboard",
             imgsrc: require('./images/message.jpg')
         },{
             title: "个人信息",
-            desc:"爱你哟",
+            desc:"我的个人信息",
             path: "/home/information",
             imgsrc: require('./images/cute.jpeg')
         },{
             title: "照片馆",
-            desc: "记录下生活中那些美好的瞬间",
+            desc: "照片",
             path: "/home/imggallery",
             imgsrc: require('./images/imggallery.jpeg')
         },{
@@ -95,7 +85,7 @@ export default {
             imgsrc: require('./images/jianjie.jpeg')
         },{
             title: '管理员登录',
-            desc: '后台管理',
+            desc: '博客后台管理',
             path: '/login',
             imgsrc: require('./images/university.jpeg')
         }],
